@@ -230,7 +230,7 @@ def run() :
     print("\t1 • Easy")
     print("\t2 • Medium")
     print("\t3 • Hard\n")
-    print("Chose difficulty level (0 to exit) :")
+    print("Choose difficulty level (0 to exit) :")
     difficultyLevel = input()
 
     if (difficultyLevel == "0") :
