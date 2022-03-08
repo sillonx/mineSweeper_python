@@ -10,6 +10,9 @@ global displayedGrid
 global hiddenGrid
 global truthGrid
 
+global flaggedCells
+flaggedCells = []
+
 #Displays array of array (max 16*16)
 def graph2DArray(myArray) :
     width = len(myArray[0])
@@ -88,6 +91,7 @@ hiddenGrid = fillGrid(16, 16, False)
 #Grid with mines (True if one on [i,j], else False)
 truthGrid = fillGrid(16, 16, True)
 #Grid with revealed status (True if unknown, esle False)
+flaggedCells.append(0)
 
 #Returns true if input is ok in mode, else false
 def validInput(x,mode) :
@@ -178,9 +182,11 @@ def revealAll() :
                 #else :
                     #displayedGrid[i][j] = str(xNeighbors)
 
-#Reveals one cell and trigger veification on all neighbors
+#Reveals one cell and trigger verification on all neighbors
 def revealOne(x,y) :
     if truthGrid[x][y] == True :
+        if (displayedGrid[x][y] == "◄") :
+            flaggedCells[0] += flagCell(x,y)
         xNeighbors = calcNeighbors(x,y)
         if (xNeighbors == 0) :
             displayedGrid[x][y] = " "
@@ -205,7 +211,15 @@ def floodFill(x,y) :
 
 #Flags a cell without revealing it
 def flagCell(x,y) :
-    displayedGrid[x][y] = "◄"
+    if (displayedGrid[x][y] == "◄") :
+        if (truthGrid[x][y]) :
+            displayedGrid[x][y] = "█"
+        else :
+            displayedGrid[x][y] = str(calcNeighbors(x,y))
+        return -1
+    elif (truthGrid[x][y]) :
+        displayedGrid[x][y] = "◄"
+        return 1
 
 #Launches the game
 def run() :
@@ -233,6 +247,7 @@ def run() :
         refreshDisplay()
         if (flagMode) :
             print("- FLAG MODE ON (-1 to turn off) -")
+            print(str(flaggedCells[0]) + "/" + str(int(difficultyLevel)*20) + " flagged cells")
         print("Select a cell :\n")
         print("# Row (-1 to flag / -2 to cancel / -3 to exit) :")
         rowPlayed = input()
@@ -289,6 +304,7 @@ def run() :
                     print("\nYou're about to reveal a flagged cell, continue ? (Y/N)")
                     proceedRes = input()
                     while (not validInput(proceedRes,"yesno")) :
+                        (print("\nInvalid choice"))
                         proceedRes = input()
                     if (proceedRes in ["Y","y","1"]) :
                         revealAll()
@@ -309,6 +325,7 @@ def run() :
                     print("\nYou're about to reveal a flagged cell, continue ? (Y/N)")
                     proceedRes = input()
                     while (not validInput(proceedRes,"yesno")) :
+                        (print("\nInvalid choice"))
                         proceedRes = input()
                     if (proceedRes in ["Y","y","1"]) :
                         revealOne(x,y)
@@ -317,7 +334,7 @@ def run() :
                 else :
                     revealOne(x,y)
         else :
-            flagCell(x,y)
+            flaggedCells[0] += flagCell(x,y)
 
     refreshDisplay()
     print("CONGRATULATIONS !")
