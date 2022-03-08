@@ -219,9 +219,12 @@ def main() :
             else :
                 displayedGrid[x][y] = str(calcNeighbors(x,y))
             return -1
-        elif (truthGrid[x][y]) :
-            displayedGrid[x][y] = "◄"
-            return 1
+        else : 
+            if (truthGrid[x][y]) :
+                displayedGrid[x][y] = "◄"
+                return 1
+            else :
+                return 0
 
     #Restarts a new game
     def restart() :
