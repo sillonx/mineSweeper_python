@@ -20,48 +20,48 @@ def graph2DArray(myArray) :
 
     if (height<1 or height>16) :
         print("Error : invalid array size")
-        return 0
+        exit()
     for i in range (height) :
         if (len(myArray[i]) != width) :
             print("Error : invalid array size")
-            return 0
+            exit()
 
     hexa = ["A","B","C","D","E","F"]
-    firstRow = " │"
+    firstRow = "   │"
     for i in range (width) :
         if (i > 9) :
             j = i - 10
-            firstRow += hexa[j] + "│"
+            firstRow += " " + hexa[j] + " │"
         else :
-            firstRow += str(i) + "│"
+            firstRow += " " + str(i) + " │"
 
-    middleRow = "─┼"
-    lastRow = "─┴"
+    middleRow = "───┼"
+    lastRow = "───┴"
 
     for i in range (width) :
         if (i == width - 1) :
-            lastRow += "─┘"
-            middleRow += "─┤"
+            lastRow += "───┘"
+            middleRow += "───┤"
         else :
-            lastRow += "─┴"
-            middleRow += "─┼"
+            lastRow += "───┴"
+            middleRow += "───┼"
 
-    print(firstRow)
-    print(middleRow)
+    print("\t" + firstRow)
+    print("\t" + middleRow)
 
     for i in range (height) :
         if (i > 9) :
             j = i - 10
-            display = hexa[j] + "│"
+            display = " " + hexa[j] + " │"
         else :
-            display = str(i) + "│"
+            display = " " + str(i) + " │"
         for j in range (len(myArray[i])) :
-            display = display + str(myArray[i][j]) + "│"
-        print(display)
+            display = display + " " + str(myArray[i][j]) + " │"
+        print("\t" + display)
         if (i == len(myArray) - 1) :
-            print(lastRow)
+            print("\t" + lastRow)
         else :
-            print(middleRow)
+            print("\t" + middleRow)
     print("\n")
     return 1
 
@@ -98,7 +98,7 @@ def validInput(x,mode) :
     if (mode == "difficulty") :
         return x in ["1","2","3"]
     if (mode == "rowcol") :
-        return x in ["0","1","2","3","4","5","6","7","8","9","A","a","B","b","C","c","D","d","E","e","F","f"]
+        return x in ["0","1","2","3","4","5","6","7","8","9","A","a","10","B","b","11","C","c","12","D","d","13","E","e","14","F","f","15"]
     if (mode == "yesno") :
         return x in ["Y","y","N","n","1","0"]
 
@@ -134,7 +134,7 @@ def createGame(difficulty) :
 
 #Turns string into decimal
 def hexaToDecimal(x) :
-    if (x in ["0","1","2","3","4","5","6","7","8","9"]) :
+    if (x in ["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"]) :
         return int(x)
     else :
         if (x == "A" or x == "a") :
