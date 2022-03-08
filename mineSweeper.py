@@ -108,7 +108,7 @@ def main() :
     def createGame(difficulty) :
         if (difficulty == "1") :
             bombs = 0
-            while (bombs < 20) :
+            while (bombs < 2) :
                 x = random.randint(0,15)
                 y = random.randint(0,15)
                 if (not (hiddenGrid[x][y])) :
@@ -269,6 +269,7 @@ def main() :
             if (rowPlayed == "-2") :
                 continue
             if (rowPlayed == "-3") :
+                restart()
                 return
             while (not validInput(rowPlayed,"rowcol")) :
                 print("\nWrong row value")
@@ -279,6 +280,7 @@ def main() :
                 if (rowPlayed == "-2") :
                     break
                 if (rowPlayed == "-3") :
+                    restart()
                     return
 
             if (rowPlayed in ["-1","-2","-3"]) :
@@ -292,6 +294,7 @@ def main() :
             if (colPlayed == "-2") :
                 continue
             if (colPlayed == "-3") :
+                restart()
                 return
             while (not validInput(colPlayed,"rowcol")) :
                 print("\nWrong column value")
@@ -302,6 +305,7 @@ def main() :
                 if (colPlayed == "-2") :
                     break
                 if (colPlayed == "-3") :
+                    restart()
                     return
 
             if (colPlayed in ["-1","-2","-3"]) :
@@ -331,6 +335,7 @@ def main() :
                         refreshDisplay()
                         print("BOOM !")
                         print("You lost...\n")
+                        restart()
                         return 0
                 else :
                     if (displayedGrid[x][y] == "◄") :
@@ -351,9 +356,9 @@ def main() :
         refreshDisplay()
         print("CONGRATULATIONS !")
         print("You won.\n")
+        restart()
         return 1
 
     run()
-    restart()
 
 main()
