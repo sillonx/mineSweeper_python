@@ -108,7 +108,7 @@ def main() :
     def createGame(difficulty) :
         if (difficulty == "1") :
             bombs = 0
-            while (bombs < 2) :
+            while (bombs < 20) :
                 x = random.randint(0,15)
                 y = random.randint(0,15)
                 if (not (hiddenGrid[x][y])) :
