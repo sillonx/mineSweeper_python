@@ -1,13 +1,15 @@
 #python .\mineSweeper.py
+#python3 mineSweeper.py
 
 import os
 import random
 
+#Declaring grids needed
 global displayedGrid
 global hiddenGrid
 global truthGrid
 
-#Display array of array (max 16*16)
+#Displays array of array (max 16*16)
 def graph2DArray(myArray) :
     width = len(myArray[0])
     height = len(myArray)
@@ -59,13 +61,16 @@ def graph2DArray(myArray) :
     print("\n")
     return 1
 
-#Update grid display
+#Updates grid display
 def refreshDisplay() :
-    os.system('cls')
+    try : 
+        os.system("cls")
+    except :
+        os.system("clear")
     print("\n"*3)
     graph2DArray(displayedGrid)
 
-#Return array of arrays (h*w) filled with s
+#Returns array of arrays (h*w) filled with s
 def fillGrid(height, width, s) :
     myGrid = []
     for i in range (height) :
@@ -75,11 +80,15 @@ def fillGrid(height, width, s) :
         myGrid.append(tempTab)
     return myGrid
 
+#Setting all grids up
 displayedGrid = fillGrid(16, 16,"█")
+#Grid displayed on game screen
 hiddenGrid = fillGrid(16, 16, False)
+#Grid with mines (True if one on [i,j], else False)
 truthGrid = fillGrid(16, 16, True)
+#Grid with revealed status (True if unknown, esle False)
 
-#Return true if input is ok in mode, else false
+#Returns true if input is ok in mode, else false
 def validInput(x,mode) :
     if (mode == "difficulty") :
         return x in ["1","2","3"]
@@ -88,7 +97,7 @@ def validInput(x,mode) :
     if (mode == "yesno") :
         return x in ["Y","y","N","n","1","0"]
 
-#Set grids up depending on difficulty chosen
+#Sets grid up depending on difficulty chosen
 def createGame(difficulty) :
     if (difficulty == "1") :
         bombs = 0
@@ -118,7 +127,7 @@ def createGame(difficulty) :
                 bombs += 1
         return 1
 
-#Turn string into decimal
+#Turns string into decimal
 def hexaToDecimal(x) :
     if (x in ["0","1","2","3","4","5","6","7","8","9"]) :
         return int(x)
@@ -136,55 +145,68 @@ def hexaToDecimal(x) :
         if (x == "F" or x == "f") :
             return 15
 
-#Return the number of bombs around (x,y)
+#Returns the number of bombs around (x,y)
 def calcNeighbors(x,y) :
     xNeighbors = 0
     if (hiddenGrid[x][y]) :
         return -1
     for i in range (-1,2) :
+        if (x+i < 0 or x+i >= 16) :
+            continue
         for j in range (-1,2) :
+            if (y+j < 0 or y+j >= 16) :
+                continue
             try:
                 if (hiddenGrid[x+i][y+j]) :
                     xNeighbors += 1
             except IndexError:
-                xNeighbors += 0
+                pass
     return xNeighbors
 
-#Reveal all the grid
+#Reveals all the grid
 def revealAll() :
     for i in range (16) :
         for j in range (16) :
             xNeighbors = calcNeighbors(i,j)
             if (xNeighbors == - 1) :
                 displayedGrid[i][j] = "‼"
-            else :
-                if (xNeighbors == 0) :
-                    displayedGrid[i][j] = " "
-                else :
-                    displayedGrid[i][j] = str(xNeighbors)
+    #uncomment next 5 lines if you want to display all cells once over
+            #else :
+                #if (xNeighbors == 0) :
+                    #displayedGrid[i][j] = " "
+                #else :
+                    #displayedGrid[i][j] = str(xNeighbors)
 
-#Reveal one square and trigger veification on all neighbors
+#Reveals one cell and trigger veification on all neighbors
 def revealOne(x,y) :
     if truthGrid[x][y] == True :
         xNeighbors = calcNeighbors(x,y)
-        if (xNeighbors != 0) :
-            displayedGrid[x][y] = str(xNeighbors)
-            truthGrid[x][y] = False
-        else :
+        if (xNeighbors == 0) :
             displayedGrid[x][y] = " "
             truthGrid[x][y] = False
-            for i in range (-1,2) :
-                for j in range (-1,2) :
-                    try:
-                        revealOne(x+i,y+j)
-                    except IndexError:
-                        pass
+            floodFill(x,y)
+        else :
+            displayedGrid[x][y] = str(xNeighbors)
+            truthGrid[x][y] = False
 
-#Flag a square without revealing it
-def flagSquare(x,y) :
+#Reveals all adjacent cells
+def floodFill(x,y) :
+    for i in range (-1,2) :
+        if (x+i < 0 or x+i >= 16) :
+            continue
+        for j in range (-1,2) :
+            if (y+j < 0 or y+j >= 16) :
+                continue
+            try:
+                revealOne(x+i,y+j)
+            except IndexError:
+                pass
+
+#Flags a cell without revealing it
+def flagCell(x,y) :
     displayedGrid[x][y] = "◄"
 
-#Launch the game
+#Launches the game
 def run() :
 
     refreshDisplay()
@@ -210,7 +232,7 @@ def run() :
         refreshDisplay()
         if (flagMode) :
             print("- FLAG MODE ON (-1 to turn off) -")
-        print("Select a square :\n")
+        print("Select a cell :\n")
         print("# Row (-1 to flag / -2 to cancel / -3 to exit) :")
         rowPlayed = input()
         if (rowPlayed == "-1") :
@@ -263,7 +285,7 @@ def run() :
         if (not flagMode) :
             if (neighbors == -1) :
                 if (displayedGrid[x][y] == "◄") :
-                    print("\nYou're about to reveal a flagged square, continue ? (Y/N)")
+                    print("\nYou're about to reveal a flagged cell, continue ? (Y/N)")
                     proceedRes = input()
                     while (not validInput(proceedRes,"yesno")) :
                         proceedRes = input()
@@ -283,7 +305,7 @@ def run() :
                     return 0
             else :
                 if (displayedGrid[x][y] == "◄") :
-                    print("\nYou're about to reveal a flagged square, continue ? (Y/N)")
+                    print("\nYou're about to reveal a flagged cell, continue ? (Y/N)")
                     proceedRes = input()
                     while (not validInput(proceedRes,"yesno")) :
                         proceedRes = input()
@@ -294,7 +316,7 @@ def run() :
                 else :
                     revealOne(x,y)
         else :
-            flagSquare(x,y)
+            flagCell(x,y)
 
     refreshDisplay()
     print("CONGRATULATIONS !")
