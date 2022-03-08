@@ -3,6 +3,7 @@
 
 import os
 import random
+import platform
 
 #Declaring grids needed
 global displayedGrid
@@ -63,9 +64,9 @@ def graph2DArray(myArray) :
 
 #Updates grid display
 def refreshDisplay() :
-    try : 
+    if (platform.system() == "Windows") : 
         os.system("cls")
-    except :
+    elif (platform.system() == "Linux" or platform.system() == "Darwin") :
         os.system("clear")
     print("\n"*3)
     graph2DArray(displayedGrid)
