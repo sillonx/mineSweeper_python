@@ -186,7 +186,7 @@ def main() :
 
     #Reveals one cell and trigger verification on all neighbors
     def revealOne(x,y) :
-        if truthGrid[x][y] == True :
+        if (truthGrid[x][y]) :
             if (displayedGrid[x][y] == "◄") :
                 flaggedCells[0] += flagCell(x,y)
             xNeighbors = calcNeighbors(x,y)
